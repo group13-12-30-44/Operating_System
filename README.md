@@ -9,3 +9,15 @@ Once the ingredients are taken from the table, the agent supplies another two.
 On the other hand, each smoker waits for the agent's notification. 
 Once it is notified, the smoker picks up the ingredients, makes a cigarette, smokes for a while, 
 and goes back to the table waiting for his next ingredients.
+
+
+We use red squares and green circles for semaphore waits and signals, respectively. 
+The table is a shared object, because the agent puts ingredients on the table and smokers take ingredients from the table.
+Therefore, some protection is necessary to avoid race condition. 
+A mutex lock simply does not work, because with a lock the owner must unlock the lock which is not the case here. 
+The agent waits for the table to become available, and then puts ingredients on the table. 
+If we use a mutex lock, the agent must unlock the table, and if the agent is a fast runner he may come back 
+and lock the table again to make another set of ingredient before the previous ones are taken. 
+Thus, we have a race condition. 
+Thus, we use a semaphore with which the thread that executes a wait to lock the semaphore and the thread that 
+executes a signal to unlock the semaphore do not have to be the same.
