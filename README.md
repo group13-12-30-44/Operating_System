@@ -21,3 +21,17 @@ and lock the table again to make another set of ingredient before the previous o
 Thus, we have a race condition. 
 Thus, we use a semaphore with which the thread that executes a wait to lock the semaphore and the thread that 
 executes a signal to unlock the semaphore do not have to be the same.
+
+
+When the table is available, the agent puts ingredient on the table. 
+Of course, the agent knows what ingredients are on the table, and, hence, signals the smoker that needs this 
+set of ingredients. On the other hand, a smoker cannot continue if he has no ingredients. 
+To this end, we need another semaphore to block a smoker. In fact, we need three semaphores, one for each smoker. 
+For example, if the agent puts paper and match on the table, he most inform the smoker who needs paper and match to 
+continue. Therefore, the smoker who needs paper and match must wait on this semaphore.
+
+
+Thus, the agent prepares for the ingredients, waits on the table, makes the ingredients available on the table when it 
+becomes available, signals the proper smoker to take the ingredient, and then goes back for another round. 
+For a smoker, he waits for the ingredients he needs, takes them when they are available, informs the agent that the 
+table is free, makes a cigarette and smokes, and goes back for another round.
