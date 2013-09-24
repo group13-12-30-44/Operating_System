@@ -1,0 +1,59 @@
+VAR
+
+tobacco_paper, tobacco_matches, paper_matches, done_smoking: SEMAPHORE;
+
+PROCEDURE vendor
+BEGIN
+WHILE (making_money) DO
+        BEGIN
+            CASE (random(1, 3)) OF
+                1:
+                    signal(tobacco_paper);
+                2:
+                    signal(tobacco_matches);
+                3:
+                    signal(paper_matches);
+            END;
+            wait(done_smoking);
+        END;
+END;
+ 
+PROCEDURE smoker1   { This smoker has matches }
+BEGIN
+    WHILE (not_dead) DO
+        BEGIN
+            wait(tobacco_paper);
+            smoke;
+            signal(done_smoking);
+        END;
+END;
+ 
+PROCEDURE smoker2   { This smoker has paper }
+BEGIN
+    WHILE (addicted_to_nicotine) DO
+        BEGIN
+            wait(tobacco_matches);
+            smoke;
+            signal(done_smoking);
+        END;
+END;
+ 
+
+PROCEDURE smoker3 { This smoker has tobacco }
+
+BEGIN
+WHILE (can_inhale) DO
+BEGIN
+wait(paper_matches); 
+smoke;
+signal(done_smoking);
+END;
+END; 
+
+BEGIN
+tobacco_paper := 0;
+tobacco_matches := 0;
+paper_matches := 0;
+done_smoking := 0;
+
+END. 
